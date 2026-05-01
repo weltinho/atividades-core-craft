@@ -1,0 +1,52 @@
+networks:
+  corecraft:
+    external: true
+    name: corecraft
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: corecraft-a1-backend
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "8101:8000"
+    volumes:
+      - ./backend:/app
+    networks:
+      - default
+      - corecraft
+    command:
+      - uvicorn
+      - app.main:app
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8000"
+      - --reload
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: corecraft-a1-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      # Alinha com handle_path /a1 no Caddy da raiz (assets e /api sob /a1/…)
+      VITE_PUBLIC_BASE: /a1
+      # URL pública do browser (TLS + porta); alinha URLs de módulos atrás do Caddy
+      VITE_DEV_ORIGIN: "${VITE_DEV_ORIGIN:-https://localhost:8443}"
+      # HMR WebSocket atrás de handle_path /a1 quase sempre falha → desliga por defeito
+      VITE_DISABLE_HMR: "${VITE_DISABLE_HMR:-1}"
+    ports:
+      - "5174:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - default
+      - corecraft

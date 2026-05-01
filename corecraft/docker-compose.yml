@@ -1,0 +1,54 @@
+# Infra na raiz do monorepo: Bitcoin Core + Caddy.
+# Arranque primeiro: `docker compose up -d` (a partir desta pasta).
+# Depois: em cada `atividade-n/`, `docker compose up -d --build`.
+
+networks:
+  corecraft:
+    name: corecraft
+
+volumes:
+  bitcoin_datadir:
+  caddy-data:
+  caddy-config:
+
+services:
+  bitcoind:
+    image: bitcoin/bitcoin:31.0
+    container_name: corecraft-bitcoind
+    restart: unless-stopped
+    networks:
+      - corecraft
+    command:
+      - -conf=/bitcoin/bitcoin.conf
+      - -printtoconsole=1
+      - -rpcuser=${BITCOIN_RPC_USER:-bitcoin}
+      - -rpcpassword=${BITCOIN_RPC_PASSWORD:-bitcoin}
+    ports:
+      - "${BITCOIN_P2P_PORT:-38333}:38333"
+      - "${BITCOIN_RPC_PORT_HOST:-38332}:38332"
+    volumes:
+      - ./infra/bitcoin/bitcoin.conf:/bitcoin/bitcoin.conf:ro
+      - bitcoin_datadir:/home/bitcoin/.bitcoin
+    expose:
+      - "38332"
+
+  caddy:
+    image: caddy:2.8
+    container_name: corecraft-caddy
+    restart: unless-stopped
+    networks:
+      - corecraft
+    ports:
+      - "${CADDY_HTTP_PORT:-80}:80"
+      - "${CADDY_HTTPS_PORT:-443}:443"
+    environment:
+      CADDY_SITE_ADDRESSES: ${CADDY_SITE_ADDRESSES:-localhost}
+      CADDY_DEFAULT_SNI: ${CADDY_DEFAULT_SNI:-localhost}
+      # Não usar https://{host} por defeito: com HTTP em 8080 o Host inclui :8080 e o redirect aponta para HTTPS na porta errada (loop).
+      CADDY_REDIRECT_BASE: ${CADDY_REDIRECT_BASE:-https://localhost:8443}
+    volumes:
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - bitcoind

@@ -1,0 +1,45 @@
+networks:
+  corecraft:
+    external: true
+    name: corecraft
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: corecraft-a3-backend
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "8103:8000"
+    volumes:
+      - ./backend:/app
+    networks:
+      - default
+      - corecraft
+    command:
+      - uvicorn
+      - app.main:app
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8000"
+      - --reload
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: corecraft-a3-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5176:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - default
+      - corecraft
