@@ -12,6 +12,13 @@
 {$CADDY_SITE_ADDRESSES} {
 	tls internal
 
+	redir / /home 308
+	redir /home/ /home 308
+	handle /home {
+		header Content-Type "text/html; charset=utf-8"
+		respond "<!doctype html><html lang='pt-BR'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>CoreCraft Home</title><style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:2rem;line-height:1.5}h1{margin:0 0 .75rem}ul{padding-left:1.2rem}a{text-decoration:none;color:#0f4c8a}a:hover{text-decoration:underline}</style></head><body><h1>CoreCraft</h1><p>Selecione uma atividade:</p><ul><li><a href='/a1/'>Atividade 1</a></li><li><a href='/a2/'>Atividade 2</a></li><li><a href='/a3/'>Atividade 3</a></li></ul></body></html>" 200
+	}
+
 	handle_path /a1/api/* {
 		reverse_proxy corecraft-a1-backend:8000
 	}

@@ -19,6 +19,7 @@ services:
     networks:
       - corecraft
     command:
+      - -signet
       - -conf=/bitcoin/bitcoin.conf
       - -printtoconsole=1
       - -rpcuser=${BITCOIN_RPC_USER:-bitcoin}

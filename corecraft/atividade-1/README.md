@@ -42,3 +42,6 @@ cd atividade-1 && docker compose up -d --build frontend
 ## Variáveis `.env`
 
 Alinhadas ao `bitcoind` do compose da raiz: **`BITCOIN_HOST=bitcoind`**, **`BITCOIN_RPC_PORT=38332`**, **`BITCOIN_NETWORK=signet`**, e as mesmas credenciais RPC que no `.env` da raiz.
+
+Para os testes de mempool, o backend cria/carrega automaticamente a wallet de laboratório (`BITCOIN_TEST_WALLET`, default `testwallet`) no startup.  
+Em **signet** não há mint local de saldo: usa o endpoint `GET /api/wallet/test/status` para obter o `funding_address` e enviar fundos de faucet; depois usa `POST /api/mempool/send-test-tx`.
