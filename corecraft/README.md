@@ -22,8 +22,9 @@ docker compose up -d --build
 
 ### 3) Acessar no navegador
 
-- Home: `https://localhost:8443/`
-- Atividade 1: `https://localhost:8443/a1/`
+- Home (HTTP): `http://localhost/`
+- Atividade 1 (HTTP): `http://localhost/a1/`
+- Opcional HTTPS: `https://localhost:8443/` e `https://localhost:8443/a1/`
 
 ## Estrutura
 
@@ -110,16 +111,16 @@ curl -sS http://127.0.0.1:8101/blockchain/lag | jq
 ### Atividade 1 — via Caddy
 
 ```bash
-curl -k -sS https://localhost:8443/a1/api/health
-curl -k -sS https://localhost:8443/a1/api/mempool/summary | jq
-curl -k -sS https://localhost:8443/a1/api/blockchain/lag | jq
+curl -sS http://localhost/a1/api/health
+curl -sS http://localhost/a1/api/mempool/summary | jq
+curl -sS http://localhost/a1/api/blockchain/lag | jq
 ```
 
 ### Frontend
 
-- Abrir `https://localhost:8443/a1/`
+- Abrir `http://localhost/a1/`
 - Verificar cards de mempool/sync, saldo da wallet de teste e painel `RPC RESPONSE`
-- Home simples com links para atividades: `https://localhost:8443/home`
+- Home simples com links para atividades: `http://localhost/home`
 
 ## Testes da wallet de laboratório (atividade 1)
 

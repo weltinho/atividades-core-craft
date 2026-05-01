@@ -45,8 +45,6 @@ services:
     environment:
       CADDY_SITE_ADDRESSES: ${CADDY_SITE_ADDRESSES:-localhost}
       CADDY_DEFAULT_SNI: ${CADDY_DEFAULT_SNI:-localhost}
-      # Não usar https://{host} por defeito: com HTTP em 8080 o Host inclui :8080 e o redirect aponta para HTTPS na porta errada (loop).
-      CADDY_REDIRECT_BASE: ${CADDY_REDIRECT_BASE:-https://localhost:8443}
     volumes:
       - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data

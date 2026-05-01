@@ -2,16 +2,7 @@
 	default_sni {$CADDY_DEFAULT_SNI}
 }
 
-:80 {
-	# Base do redirect (sem path). Vem de CADDY_REDIRECT_BASE no compose (por defeito: https://{host}).
-	# Com CADDY_HTTP_PORT/CADDY_HTTPS_PORT alternativos, define na raiz .env, ex.:
-	# CADDY_REDIRECT_BASE=https://localhost:8443
-	redir {$CADDY_REDIRECT_BASE}{uri} permanent
-}
-
-{$CADDY_SITE_ADDRESSES} {
-	tls internal
-
+(corecraft_routes) {
 	redir / /home 308
 	redir /home/ /home 308
 	handle /home {
@@ -61,4 +52,13 @@
 			header_up X-Forwarded-Host {http.request.host}
 		}
 	}
+}
+
+:80 {
+	import corecraft_routes
+}
+
+{$CADDY_SITE_ADDRESSES} {
+	tls internal
+	import corecraft_routes
 }
