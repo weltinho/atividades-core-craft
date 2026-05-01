@@ -10,8 +10,7 @@ services:
     container_name: corecraft-a1-backend
     restart: unless-stopped
     env_file:
-      - path: .env
-        required: false
+      - .env
     ports:
       - "8101:8000"
     volumes:
