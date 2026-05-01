@@ -253,9 +253,9 @@ export default function App() {
           </div>
           {mempool?.fee_distribution_rule && (
             <p className="muted percentile-hint">
-              Regra dinâmica: low &lt; {mempool.fee_distribution_rule.low_cut} sat/vB; high &gt;{" "}
+              Regra dinâmica: baixa &lt; {mempool.fee_distribution_rule.low_cut} sat/vB; alta &gt;{" "}
               {mempool.fee_distribution_rule.high_cut} sat/vB (centro:{" "}
-              {mempool.fee_distribution_rule.weighted_center} | input: {mempool.fee_distribution_rule.threshold_percent}%)
+              {mempool.fee_distribution_rule.weighted_center} | +/- input: {mempool.fee_distribution_rule.threshold_percent}%)
             </p>
           )}
           {wallet && (
