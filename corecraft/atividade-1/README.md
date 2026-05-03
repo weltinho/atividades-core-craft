@@ -15,16 +15,16 @@ URLs típicas: API **`http://HOST:8101/...`** ou atrás do Caddy **`http://HOST/
 
 ## Montagem do ambiente (primeiro passo)
 
-1. Na raiz **`corecraft/`**, sobe o compose de infra (**bitcoind** + **caddy**), que cria a rede Docker **`corecraft`**:
+1. Na raiz **`corecraft/`**, sobe **infra + todas as atividades** (rede Docker **`corecraft`**, bitcoind, caddy, a1, a2, a3):
 
    ```bash
    cd ..
-   docker compose up -d
+   ./montar-ambiente-linux.sh
    ```
 
-   Ou: `../montar-ambiente-linux.sh`, `../montar-ambiente-mac.sh` / `..\montar-ambiente-windows.bat` (a partir da raiz `corecraft/`).
+   Ou: `./montar-ambiente-mac.sh` (macOS) / `montar-ambiente-windows.bat` (Windows) na mesma pasta `corecraft/`.
 
-2. Nesta pasta **`atividade-1/`**:
+2. **Opcional** — só rebuild desta stack (a partir desta pasta `atividade-1/`, após alterar código):
 
    ```bash
    docker compose up -d --build

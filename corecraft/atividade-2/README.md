@@ -17,9 +17,9 @@ URLs típicas: **`http://HOST:8102/...`** ou **`http://HOST/a2/api/...`** atrás
 
 ## Montagem do ambiente (primeiro passo)
 
-1. Na raiz **`corecraft/`**: `docker compose up -d` (rede `corecraft`, bitcoind, caddy) — ou `montar-ambiente-linux.sh`, `montar-ambiente-mac.sh` / `montar-ambiente-windows.bat` nessa pasta.
+1. Na raiz **`corecraft/`**: `./montar-ambiente-linux.sh`, `./montar-ambiente-mac.sh` ou `montar-ambiente-windows.bat` (infra + todas as atividades). Alternativa manual: `docker compose up -d` na raiz e depois `docker compose up -d --build` em cada `atividade-n/`.
 
-2. Nesta pasta **`atividade-2/`**: `docker compose up -d --build` (ou use na raiz o script com `--todas-atividades`).
+2. **Opcional** — só rebuild desta pasta: `docker compose up -d --build` em **`atividade-2/`**.
 
 O **`.env`** está no repositório.
 

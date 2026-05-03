@@ -6,35 +6,24 @@ Monorepo no formato CoreCraft com infra compartilhada na raiz e apps por ativida
 
 Na pasta **`corecraft/`** (Docker + Docker Compose v2). Os `.env` da raiz e de cada atividade vêm **no repositório** com defaults de Signet/laboratório.
 
-### Opção A — `docker compose` manual
+### Opção A — `docker compose` manual (só infra na raiz)
 
 ```bash
 cd corecraft
 docker compose up -d
 ```
 
-### Opção B — scripts na raiz `corecraft/`
+Depois, em cada atividade: `cd atividade-n && docker compose up -d --build`.
+
+### Opção B — scripts na raiz `corecraft/` (recomendado: tudo de uma vez)
 
 - **Linux:** `./montar-ambiente-linux.sh`
-- **macOS:** `./montar-ambiente-mac.sh` (equivalente: chama o mesmo fluxo que o script Linux)
+- **macOS:** `./montar-ambiente-mac.sh` (chama o script Linux)
 - **Windows (CMD na pasta `corecraft`):** `montar-ambiente-windows.bat`
 
-Equivalem ao `docker compose up -d` da raiz (bitcoind + caddy).
+Sobem **bitcoind + caddy** e, em seguida, **atividade-1**, **atividade-2** e **atividade-3** (`docker compose up -d --build` em cada pasta).
 
-### Opcional — subir também as três atividades
-
-```bash
-./montar-ambiente-linux.sh --todas-atividades
-./montar-ambiente-mac.sh --todas-atividades
-montar-ambiente-windows.bat --todas-atividades
-```
-
-Se não usaste `--todas-atividades`, sobe cada app quando precisares:
-
-```bash
-cd atividade-1   # ou atividade-2, atividade-3
-docker compose up -d --build
-```
+A flag legada `--todas-atividades` é aceite mas **redundante** (o script já faz o mesmo sem ela).
 
 ### Acessar no navegador
 
@@ -92,23 +81,23 @@ Fluxo de tráfego (exemplo atividade 1):
 - Docker + Docker Compose v2
 - Portas de host livres conforme `.env` da raiz (`CADDY_HTTP_PORT`, `CADDY_HTTPS_PORT`, etc.)
 
-### 2) Subir infra compartilhada (raiz)
+### 2) Subir tudo (raiz)
 
 ```bash
 cd corecraft
-docker compose up -d
+./montar-ambiente-linux.sh
 ```
 
-(ou `./montar-ambiente-linux.sh` / `./montar-ambiente-mac.sh` / `montar-ambiente-windows.bat`.)
+(macOS: `./montar-ambiente-mac.sh` · Windows: `montar-ambiente-windows.bat`)
 
-### 3) Subir uma atividade (ex.: atividade 1)
+Alternativa manual: na raiz `docker compose up -d` e depois `cd atividade-n && docker compose up -d --build` para cada uma.
+
+### 3) Só reconstruir uma atividade (opcional)
 
 ```bash
-cd atividade-1
+cd corecraft/atividade-1   # ou atividade-2, atividade-3
 docker compose up -d --build
 ```
-
-Repita para `atividade-2` e `atividade-3` quando necessário, ou use na raiz `--todas-atividades` nos scripts acima.
 
 Smoke rápido da infra: `cd corecraft && docker compose ps`.
 

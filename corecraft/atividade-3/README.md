@@ -52,22 +52,16 @@ Se estiveres a avaliar só o enunciado da mentoria, podes ignorar esta secção:
 
 ## Montagem do ambiente (primeiro passo)
 
-1. Na raiz **`corecraft/`**, subir a infra partilhada (**bitcoind** + **caddy**), que cria a rede Docker **`corecraft`**:
+1. Na raiz **`corecraft/`**, subir **tudo** (infra + atividades 1–3):
 
    ```bash
    cd corecraft
-   docker compose up -d
+   ./montar-ambiente-linux.sh
    ```
 
-   Ou, equivalente: `./montar-ambiente-linux.sh`, `./montar-ambiente-mac.sh` ou `montar-ambiente-windows.bat` (na mesma pasta).
+   Ou `./montar-ambiente-mac.sh` / `montar-ambiente-windows.bat` na mesma pasta.
 
-   Opcional — subir também esta atividade (e as outras): `./montar-ambiente-linux.sh --todas-atividades` ou `./montar-ambiente-mac.sh --todas-atividades`.
-
-2. Se não usaste `--todas-atividades`, nesta pasta **`atividade-3/`**:
-
-   ```bash
-   docker compose up -d --build
-   ```
+2. **Opcional** — só rebuild desta stack: nesta pasta **`atividade-3/`**, `docker compose up -d --build`.
 
 Os ficheiros **`.env`** na raiz `corecraft/` e aqui vêm **no repositório**.
 
