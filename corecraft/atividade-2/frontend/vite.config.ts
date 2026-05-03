@@ -8,7 +8,7 @@ function publicBase(): string {
   return raw.endsWith("/") ? raw : `${raw}/`;
 }
 
-/** URL que o browser usa (ex. https://atividades-welton.duckdns.org). Obrigatório atrás do Caddy + TLS. */
+/** URL que o browser usa (ex. https://corecraft-welton.duckdns.org). Obrigatório atrás do Caddy + TLS. */
 function devOrigin(): string | undefined {
   const o = process.env.VITE_DEV_ORIGIN?.trim();
   return o || undefined;

@@ -1,11 +1,11 @@
-# Produção: TLS automático (Let's Encrypt) para atividades-welton.duckdns.org
+# Produção: TLS automático (Let's Encrypt) para corecraft-welton.duckdns.org
 # Requer DNS A → IP da VM e portas 80/443 abertas. Substitui o Caddyfile de lab via CADDY_CADDYFILE no compose da raiz.
 
 {
-	default_sni atividades-welton.duckdns.org
+	default_sni corecraft-welton.duckdns.org
 }
 
-atividades-welton.duckdns.org {
+corecraft-welton.duckdns.org {
 	redir / /home 308
 	redir /home/ /home 308
 	handle /home {
