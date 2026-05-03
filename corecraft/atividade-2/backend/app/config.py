@@ -13,6 +13,11 @@ class Settings(BaseSettings):
     BITCOIN_RPC_PORT: int = 38332
     BITCOIN_HOST: str = "bitcoind"
     BITCOIN_NETWORK: str = "signet"
+    BITCOIN_ZMQ_BLOCK: str = "tcp://bitcoind:28332"
+    BITCOIN_ZMQ_TX: str = "tcp://bitcoind:28333"
+    EVENTS_BUFFER_SIZE: int = 300
+    EVENTS_WINDOW_SECONDS: int = 60
+    EVENTS_LATEST_LIMIT: int = 20
 
 
 settings = Settings()

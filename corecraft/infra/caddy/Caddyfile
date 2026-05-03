@@ -16,12 +16,14 @@
 	handle /a1/ws/* {
 		reverse_proxy corecraft-a1-backend:8000
 	}
+	redir /a1 /a1/ 308
 	# Sem strip do prefixo: o Vite com base /a1/ precisa de ver /a1/... no path; com handle_path recebia / e fazia redirect → ERR_TOO_MANY_REDIRECTS
 	handle /a1/* {
 		reverse_proxy corecraft-a1-frontend:5173 {
 			header_up Host {http.request.host}
 			header_up X-Forwarded-Proto {http.request.scheme}
 			header_up X-Forwarded-Host {http.request.host}
+			header_up X-Forwarded-Prefix /a1
 		}
 	}
 
@@ -31,11 +33,13 @@
 	handle /a2/ws/* {
 		reverse_proxy corecraft-a2-backend:8000
 	}
+	redir /a2 /a2/ 308
 	handle /a2/* {
 		reverse_proxy corecraft-a2-frontend:5173 {
 			header_up Host {http.request.host}
 			header_up X-Forwarded-Proto {http.request.scheme}
 			header_up X-Forwarded-Host {http.request.host}
+			header_up X-Forwarded-Prefix /a2
 		}
 	}
 
@@ -45,11 +49,13 @@
 	handle /a3/ws/* {
 		reverse_proxy corecraft-a3-backend:8000
 	}
+	redir /a3 /a3/ 308
 	handle /a3/* {
 		reverse_proxy corecraft-a3-frontend:5173 {
 			header_up Host {http.request.host}
 			header_up X-Forwarded-Proto {http.request.scheme}
 			header_up X-Forwarded-Host {http.request.host}
+			header_up X-Forwarded-Prefix /a3
 		}
 	}
 }

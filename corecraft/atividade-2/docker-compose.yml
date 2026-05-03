@@ -35,6 +35,8 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
+    environment:
+      VITE_PUBLIC_BASE: /a2
     ports:
       - "5175:5173"
     volumes:

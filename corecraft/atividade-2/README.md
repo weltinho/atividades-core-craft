@@ -17,10 +17,13 @@ docker compose up -d --build
 
 ```bash
 curl -sS http://127.0.0.1:8102/health
+curl -sS http://127.0.0.1:8102/events/summary | jq
+curl -sS http://127.0.0.1:8102/events/latest | jq
+curl -sS http://127.0.0.1:8102/events/state-comparison | jq
 ```
 
-Frontend: `http://127.0.0.1:5175` · Caddy: `https://localhost/a2/`
+Frontend: `http://127.0.0.1:5175` · Caddy: `http://localhost/a2/`
 
 ## `.env`
 
-Igual à atividade 1 (host `bitcoind`, signet, porta **38332**), com credenciais iguais à raiz.
+Inclui RPC (`bitcoind:38332`) e ZMQ (`bitcoind:28332/28333`) para eventos em tempo real.
