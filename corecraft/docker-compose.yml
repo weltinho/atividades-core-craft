@@ -48,7 +48,8 @@ services:
       CADDY_SITE_ADDRESSES: ${CADDY_SITE_ADDRESSES:-localhost}
       CADDY_DEFAULT_SNI: ${CADDY_DEFAULT_SNI:-localhost}
     volumes:
-      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      # Em AWS/produção: no .env da raiz, CADDY_CADDYFILE=./infra/caddy/Caddyfile.production
+      - ${CADDY_CADDYFILE:-./infra/caddy/Caddyfile}:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
       - caddy-config:/config
     depends_on:

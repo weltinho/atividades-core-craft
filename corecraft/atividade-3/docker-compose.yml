@@ -37,6 +37,8 @@ services:
       - backend
     environment:
       VITE_PUBLIC_BASE: /a3
+      VITE_DEV_ORIGIN: "${VITE_DEV_ORIGIN:-https://localhost:8443}"
+      VITE_DISABLE_HMR: "${VITE_DISABLE_HMR:-1}"
     ports:
       - "5176:5173"
     volumes:
