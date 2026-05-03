@@ -2,27 +2,69 @@
 
 Stack: **FastAPI** (8000 no container) + **Vite/React** (5173). No host: **8101** (API), **5174** (UI).
 
-## Pré-requisito
+## O que esta atividade faz
 
-Na raiz **`corecraft/`**, sobe primeiro o compose de infra (**bitcoind** + **caddy**), que cria a rede Docker **`corecraft`**:
+API e UI ligadas ao **Bitcoin Core** (Signet por defeito) para:
 
-```bash
-cd ..
-docker compose up -d
-```
+- **Mempool** — resumo com estatísticas de taxas (classificação low/medium/high e agregação a partir de `getrawmempool` verbose + `getmempoolinfo`).
+- **Sincronização** — atraso / lag da blockchain (`/blockchain/lag`).
+- **Wallet de laboratório** — no arranque, o backend tenta carregar ou criar a wallet de teste (`BITCOIN_TEST_WALLET`, default `testwallet`), expõe estado e endereço para funding via **faucet Signet**, e permite refrescar contexto e enviar uma **tx de teste** (`/mempool/send-test-tx`).
+- **Config de diagnóstico** — `GET /config/bitcoin-stub` expõe parâmetros de rede/URL sem chamar o RPC.
 
-## Arranque desta atividade
+URLs típicas: API **`http://HOST:8101/...`** ou atrás do Caddy **`http://HOST/a1/api/...`** (o prefixo `/api` vem do reverse proxy).
 
-```bash
-cp .env.example .env
-docker compose up -d --build
-```
+## Montagem do ambiente (primeiro passo)
+
+1. Na raiz **`corecraft/`**, sobe o compose de infra (**bitcoind** + **caddy**), que cria a rede Docker **`corecraft`**:
+
+   ```bash
+   cd ..
+   docker compose up -d
+   ```
+
+   Ou: `../montar-ambiente-linux.sh`, `../montar-ambiente-mac.sh` / `..\montar-ambiente-windows.bat` (a partir da raiz `corecraft/`).
+
+2. Nesta pasta **`atividade-1/`**:
+
+   ```bash
+   docker compose up -d --build
+   ```
+
+O **`.env`** desta atividade está no repositório (defaults Signet/lab).
 
 ## Testes
 
+### Backend (porta directa no host)
+
 ```bash
 curl -sS http://127.0.0.1:8101/health
+curl -sS http://127.0.0.1:8101/mempool/summary | jq
+curl -sS http://127.0.0.1:8101/blockchain/lag | jq
 ```
+
+### Via Caddy (infra na raiz `corecraft/`)
+
+```bash
+curl -sS http://localhost/a1/api/health
+curl -sS http://localhost/a1/api/mempool/summary | jq
+curl -sS http://localhost/a1/api/blockchain/lag | jq
+```
+
+### Wallet de laboratório
+
+```bash
+curl -sS http://127.0.0.1:8101/wallet/test/status | jq
+curl -sS -X POST http://127.0.0.1:8101/wallet/test/refresh | jq
+curl -sS -X POST http://127.0.0.1:8101/mempool/send-test-tx -H 'Content-Type: application/json' -d '{}' | jq
+```
+
+Em **signet**, fundos vêm de faucet (não há mint local como no regtest).
+
+### Frontend
+
+- Abrir `http://localhost/a1/` (ou HTTPS na porta configurada no Caddy).
+- Verificar cards de mempool/sync, saldo da wallet de teste e painel `RPC RESPONSE`.
+- Home com links para atividades: `http://localhost/home`.
 
 Frontend **direto no host** (compose define `VITE_PUBLIC_BASE=/a1`): usa o mesmo prefixo que o Caddy — **`http://127.0.0.1:5174/a1/`** (não a raiz `/`).
 
@@ -44,4 +86,21 @@ cd atividade-1 && docker compose up -d --build frontend
 Alinhadas ao `bitcoind` do compose da raiz: **`BITCOIN_HOST=bitcoind`**, **`BITCOIN_RPC_PORT=38332`**, **`BITCOIN_NETWORK=signet`**, e as mesmas credenciais RPC que no `.env` da raiz.
 
 Para os testes de mempool, o backend cria/carrega automaticamente a wallet de laboratório (`BITCOIN_TEST_WALLET`, default `testwallet`) no startup.  
-Em **signet** não há mint local de saldo: usa o endpoint `GET /api/wallet/test/status` para obter o `funding_address` e enviar fundos de faucet; depois usa `POST /api/mempool/send-test-tx`.
+Em **signet** não há mint local de saldo: usa `GET /wallet/test/status` para obter o `funding_address` e enviar fundos de faucet; depois `POST /mempool/send-test-tx`.
+
+## Referência de endpoints
+
+Quando a API está exposta (porta directa ou Caddy), tudo o que estiver listado fica acessível a quem tiver URL e rede.
+
+| Método | Caminho | Notas |
+|--------|---------|--------|
+| `GET` | `/health` | Healthcheck |
+| `GET` | `/test` | Rota de teste |
+| `GET` | `/wallet/test/status` | Estado da wallet de laboratório |
+| `POST` | `/wallet/test/refresh` | **Escrita** — refresca contexto de teste |
+| `POST` | `/mempool/send-test-tx` | **Escrita** — envia tx de teste (Signet) |
+| `GET` | `/mempool/summary` | Resumo da mempool |
+| `GET` | `/blockchain/lag` | Atraso / sincronização |
+| `GET` | `/config/bitcoin-stub` | Lê `.env` exposto (sem RPC) |
+
+**Segurança:** em laboratório local os defaults Signet são aceitáveis. Se a API ficar **na Internet**, restringe acesso (firewall, VPN, auth à frente do Caddy) e **roda credenciais**.

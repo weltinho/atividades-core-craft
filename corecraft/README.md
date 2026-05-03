@@ -2,25 +2,41 @@
 
 Monorepo no formato CoreCraft com infra compartilhada na raiz e apps por atividade.
 
-## Instruções mais básicas para rodar
+## Montagem do ambiente (primeiro passo)
 
-### 1) Subir infra da raiz
+Na pasta **`corecraft/`** (Docker + Docker Compose v2). Os `.env` da raiz e de cada atividade vêm **no repositório** com defaults de Signet/laboratório.
+
+### Opção A — `docker compose` manual
 
 ```bash
 cd corecraft
-cp .env.example .env
 docker compose up -d
 ```
 
-### 2) Subir uma atividade (ex.: atividade-1)
+### Opção B — scripts na raiz `corecraft/`
+
+- **Linux:** `./montar-ambiente-linux.sh`
+- **macOS:** `./montar-ambiente-mac.sh` (equivalente: chama o mesmo fluxo que o script Linux)
+- **Windows (CMD na pasta `corecraft`):** `montar-ambiente-windows.bat`
+
+Equivalem ao `docker compose up -d` da raiz (bitcoind + caddy).
+
+### Opcional — subir também as três atividades
 
 ```bash
-cd atividade-1
-cp .env.example .env
+./montar-ambiente-linux.sh --todas-atividades
+./montar-ambiente-mac.sh --todas-atividades
+montar-ambiente-windows.bat --todas-atividades
+```
+
+Se não usaste `--todas-atividades`, sobe cada app quando precisares:
+
+```bash
+cd atividade-1   # ou atividade-2, atividade-3
 docker compose up -d --build
 ```
 
-### 3) Acessar no navegador
+### Acessar no navegador
 
 - Home (HTTP): `http://localhost/`
 - Atividade 1 (HTTP): `http://localhost/a1/`
@@ -31,7 +47,10 @@ docker compose up -d --build
 ```text
 corecraft/
 ├── docker-compose.yml      # infra compartilhada: bitcoind + caddy
-├── .env.example            # variáveis da infra da raiz
+├── .env                    # defaults da infra (commitado, Signet/lab)
+├── montar-ambiente-linux.sh
+├── montar-ambiente-mac.sh
+├── montar-ambiente-windows.bat
 ├── infra/
 │   ├── bitcoin/bitcoin.conf
 │   └── caddy/Caddyfile
@@ -42,7 +61,7 @@ corecraft/
 └── atividade-3/
 ```
 
-Cada `atividade-n/` contém somente app (`backend`, `frontend`, compose da atividade, README e `.env.example`).
+Cada `atividade-n/` contém `backend/`, `frontend/`, ficheiros Docker Compose, `README` e `.env` commitados no repositório. **O que cada atividade faz, como testar e a referência de endpoints** estão em `atividade-1/README.md`, `atividade-2/README.md` e `atividade-3/README.md`.
 
 ## Arquitetura
 
@@ -77,60 +96,21 @@ Fluxo de tráfego (exemplo atividade 1):
 
 ```bash
 cd corecraft
-cp .env.example .env
 docker compose up -d
 ```
+
+(ou `./montar-ambiente-linux.sh` / `./montar-ambiente-mac.sh` / `montar-ambiente-windows.bat`.)
 
 ### 3) Subir uma atividade (ex.: atividade 1)
 
 ```bash
 cd atividade-1
-cp .env.example .env
 docker compose up -d --build
 ```
 
-Repita para `atividade-2` e `atividade-3` quando necessário.
+Repita para `atividade-2` e `atividade-3` quando necessário, ou use na raiz `--todas-atividades` nos scripts acima.
 
-## Testes básicos (smoke test)
-
-### Infra
-
-```bash
-cd corecraft
-docker compose ps
-```
-
-### Atividade 1 — backend direto
-
-```bash
-curl -sS http://127.0.0.1:8101/health
-curl -sS http://127.0.0.1:8101/mempool/summary | jq
-curl -sS http://127.0.0.1:8101/blockchain/lag | jq
-```
-
-### Atividade 1 — via Caddy
-
-```bash
-curl -sS http://localhost/a1/api/health
-curl -sS http://localhost/a1/api/mempool/summary | jq
-curl -sS http://localhost/a1/api/blockchain/lag | jq
-```
-
-### Frontend
-
-- Abrir `http://localhost/a1/`
-- Verificar cards de mempool/sync, saldo da wallet de teste e painel `RPC RESPONSE`
-- Home simples com links para atividades: `http://localhost/home`
-
-## Testes da wallet de laboratório (atividade 1)
-
-```bash
-curl -sS http://127.0.0.1:8101/wallet/test/status | jq
-curl -sS -X POST http://127.0.0.1:8101/wallet/test/refresh | jq
-curl -sS -X POST http://127.0.0.1:8101/mempool/send-test-tx -H 'Content-Type: application/json' -d '{}' | jq
-```
-
-Observação: em signet, fundos vêm de faucet (não há mint local como no regtest).
+Smoke rápido da infra: `cd corecraft && docker compose ps`.
 
 ## Validação dos compose
 

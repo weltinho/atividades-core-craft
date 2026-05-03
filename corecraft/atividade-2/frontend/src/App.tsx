@@ -134,6 +134,9 @@ export default function App() {
       </header>
 
       <div className="toolbar">
+        <a className="btn btn-subtle" href="/home">
+          ← Voltar para Home
+        </a>
         <button className="btn btn-primary" type="button" onClick={() => void refresh()}>
           Atualizar Estado
         </button>

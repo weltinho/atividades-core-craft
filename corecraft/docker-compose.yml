@@ -27,6 +27,8 @@ services:
     ports:
       - "${BITCOIN_P2P_PORT:-38333}:38333"
       - "${BITCOIN_RPC_PORT_HOST:-38332}:38332"
+      # ZMQ (hashtx + rawtx no conf); opcional para subscribers no host (ex. debug).
+      - "${BITCOIN_ZMQ_PORT:-28333}:28333"
     volumes:
       - ./infra/bitcoin/bitcoin.conf:/bitcoin/bitcoin.conf:ro
       - bitcoin_datadir:/home/bitcoin/.bitcoin

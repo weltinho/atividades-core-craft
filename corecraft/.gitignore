@@ -1,4 +1,6 @@
-**/.env
+# `.env` na raiz e em cada atividade está commitado com defaults de Signet/lab.
+# Não ignores aqui; se expuseres à Internet, altera credenciais/portas antes.
+
 **/node_modules
 **/dist
 **/.venv
